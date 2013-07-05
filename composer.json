@@ -1,0 +1,39 @@
+{
+    "name": "jeremykendall/house-hunter",
+    "description": "A quick and dirty app that will rate rental properties based on custom criteria",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Jeremy Kendall",
+            "homepage": "http://about.me/jeremykendall",
+            "role": "Developer"
+        }
+    ],
+    "keywords": ["rental properties", "rating", "scoring matrix", "goofing off"],
+    "require": {
+        "php": ">=5.3.10",
+        "ext-mcrypt": "*",
+        "slim/slim": "2.2.*",
+        "slim/extras": "2.0.*",
+        "twig/twig": "1.13.*",
+        "doctrine/mongodb-odm": "1.0.*@dev"
+    },
+    "require-dev": {
+        "jeremykendall/phpctagger": "dev-master"
+    },
+    "autoload": {
+        "psr-0": 
+        {
+            "HH": "src/"
+        }
+    },
+    "scripts": {
+        "post-install-cmd": [
+            "PhpCtagger\\Composer\\Script\\Ctagger::ctag"
+        ],
+        "post-update-cmd": [
+            "PhpCtagger\\Composer\\Script\\Ctagger::ctag"
+        ]
+    }
+}
+
