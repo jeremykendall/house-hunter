@@ -24,65 +24,74 @@ class Criterion
      */
     private $name;
 
-    private $lowUpperBound;
-    private $highLowerBound;
+    /**
+     * DO NOT PERSIST
+     * @var float value
+     */
     private $value;
+
+    /**
+     * @var float lowest value
+     * @ODM\Float
+     */
     private $lowest;
+
+    /**
+     * @var float highest value
+     * @ODM\Float
+     */
     private $highest;
 
     /**
      * @var int Criterion weight
-     * @ODM\String
+     * @ODM\Int
      */
     private $weight;
 
-    public function __construct($name, $weight, $highLowerBound, $lowUpperBound)
+    /**
+     * Public constructor
+     *
+     * @param string $name    Name
+     * @param int    $weight  Weight applied to criterion
+     * @param float  $lowest  Lowest desired value
+     * @param float  $highest Highest desired value
+     */
+    public function __construct($name, $weight, $lowest, $highest)
     {
         $this->name = $name;
         $this->weight = $weight;
-        $this->highLowerBound = $highLowerBound;
-        $this->lowUpperBound = $lowUpperBound;
+        $this->lowest = $lowest;
+        $this->highest = $highest;
     }
 
+    /**
+     * Calculates and returns criterion score
+     *
+     * @return float Criterion score
+     */
     public function getScore()
     {
-        return ($this->value * $this->weight) * $this->getRangeMultiplier();
+        return ($this->normalizeValue($this->value) * $this->weight);
     }
 
-    public function getRangeMultiplier()
+    /**
+     * Converts value to number between 0 and 100
+     *
+     * @return float Normalized criterion value
+     */
+    public function normalizeValue()
     {
-        $max = $this->lowUpperBound;
-        $min = $this->highLowerBound;
+        if ($this->lowest === $this->highest && $this->value >= $this->highest) {
+            return 100;
+        }
 
-        if ($min == $max) {
-            if ($this->value >= $max) {
-                return 2;
-            }
-
+        if ($this->lowest === $this->highest && $this->value < $this->highest) {
             return 0;
         }
 
-        if ($min > $max) {
-            if ($this->value <= $max) {
-                return 2;
-            }
+        $percent = ($this->value - $this->lowest) / ($this->highest - $this->lowest);
 
-            if ($this->value > $min) {
-                return 0;
-            }
-
-            return 1;
-        }
-
-        if ($this->value >= $max) {
-            return 2;
-        }
-
-        if ($this->value < $min) {
-            return 0;
-        }
-
-        return 1;
+        return number_format($percent * 100, 2);
     }
 
     /**
@@ -126,46 +135,6 @@ class Criterion
     }
 
     /**
-     * Get lowUpperBound
-     *
-     * @return lowUpperBound
-     */
-    public function getLowUpperBound()
-    {
-        return $this->lowUpperBound;
-    }
-
-    /**
-     * Set lowUpperBound
-     *
-     * @param $lowUpperBound the value to set
-     */
-    public function setLowUpperBound($lowUpperBound)
-    {
-        $this->lowUpperBound = $lowUpperBound;
-    }
-
-    /**
-     * Get highLowerBound
-     *
-     * @return highLowerBound
-     */
-    public function getHighLowerBound()
-    {
-        return $this->highLowerBound;
-    }
-
-    /**
-     * Set highLowerBound
-     *
-     * @param $highLowerBound the value to set
-     */
-    public function setHighLowerBound($highLowerBound)
-    {
-        $this->highLowerBound = $highLowerBound;
-    }
-
-    /**
      * Get value
      *
      * @return value
@@ -204,7 +173,7 @@ class Criterion
     {
         $this->weight = $weight;
     }
-    
+
     /**
      * Get lowest
      *
@@ -214,7 +183,7 @@ class Criterion
     {
         return $this->lowest;
     }
-    
+
     /**
      * Set lowest
      *
@@ -224,7 +193,7 @@ class Criterion
     {
         $this->lowest = $lowest;
     }
-    
+
     /**
      * Get highest
      *
@@ -234,7 +203,7 @@ class Criterion
     {
         return $this->highest;
     }
-    
+
     /**
      * Set highest
      *

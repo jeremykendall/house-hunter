@@ -27,7 +27,7 @@ $config->setDefaultDB('hh');
 $dm = DocumentManager::create(new Connection(), $config);
 $dm->getSchemaManager()->ensureIndexes();
 
-$criterion = new HH\Document\Criterion('test', 10);
+$criterion = new HH\Document\Criterion('rent', 5, 1300, 600);
 $dm->persist($criterion);
 
 try {

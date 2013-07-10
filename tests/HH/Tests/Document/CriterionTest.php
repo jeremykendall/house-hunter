@@ -9,9 +9,9 @@ class CriterionTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider criteriaScoreDataProvider
      */
-    public function testGetCriteriaScore($weight, $highLower, $lowUpper, $value, $score)
+    public function testGetCriteriaScore($weight, $lowest, $highest, $value, $score)
     {
-        $criterion = new Criterion('test', $weight, $highLower, $lowUpper);
+        $criterion = new Criterion('test', $weight, $lowest, $highest);
         $criterion->setValue($value);
         $this->assertEquals($score, $criterion->getScore());
     }
@@ -19,42 +19,37 @@ class CriterionTest extends \PHPUnit_Framework_TestCase
     public function criteriaScoreDataProvider()
     {
         return array(
-            // Mid-range rent
-            array(5, 1200, 700, 1100, 5500),
+            // High-ish rent
+            array(5, 1500, 500, 1100, 200),
             // Low rent
-            array(5, 1200, 700, 699, 6990),
+            array(5, 1500, 500, 600, 450),
             // Has dishwasher
-            array(4, 1, 1, 1, 8),
+            array(4, 1, 1, 1, 400),
             // Has not garbage disposal
             array(2, 1, 1, 0, 0),
         );
     }
 
     /**
-     * @dataProvider rangeMultiplierDataProvider
+     * @dataProvider normalizeValueDataProvider
      */
-    public function testGetRangeMultiplier($highLower, $lowUpper, $value, $multiplier)
+    public function testNormalizeValue($lowest, $highest, $value, $converted)
     {
-        $criterion = new Criterion('test', 5, $highLower, $lowUpper);
+        $criterion = new Criterion('test', 5, $lowest, $highest);
         $criterion->setValue($value);
-        $this->assertEquals($multiplier, $criterion->getRangeMultiplier());
+        $this->assertEquals($converted, $criterion->normalizeValue());
     }
 
-    public function rangeMultiplierDataProvider()
+    public function normalizeValueDataProvider()
     {
         return array(
-            // Normal
-            array(3, 7, 10, 2),
-            array(3, 7, 4, 1),
-            array(3, 7, 2, 0),
-            // Inverted
-            array(7, 3, 4, 1),
-            array(7, 3, 1, 2),
-            array(7, 3, 8, 0),
-            // Same (boolean)
-            array(3, 3, 7, 2),
-            array(3, 3, 3, 2),
-            array(3, 3, 2, 0),
+            array(5, 30, 10, 20),
+            array(5, 30, 15, 40),
+            array(5, 30, 20, 60),
+            array(1500, 500, 600, 90),
+            array(1500, 500, 1400, 10),
+            array(1500, 500, 975, 52.50),
+            array(1500, 500, 750, 75.00),
         );
     }
 }

@@ -49,32 +49,24 @@ class CriteriaCalculatorTest extends \PHPUnit_Framework_TestCase
         $this->calculator = new CriteriaCalculator();
     }
 
-    public function testCreateCalculator()
-    {
-        $this->assertInstanceOf('HH\Calculator\CriteriaCalculator', $this->calculator);
-    }
-
     public function testCalculateScore()
     {
-        // (10 + 6 + 5000 + 40 + 0) / 22
-        $this->assertEquals(229.82, $this->calculator->calculateScore($this->criteria));
+        $this->assertEquals(70.45, $this->calculator->calculateScore($this->criteria));
     }
 
     public function testCalculateScoreNoGarageHasCentralAirThreeRooms()
     {
-        // (10 + 0 + 5000 + 30 + 8) / 22
         $this->criteria['garage']->setValue(0);
         $this->criteria['rooms']->setValue(3);
         $this->criteria['central air']->setValue(1);
 
-        $this->assertEquals(229.45, $this->calculator->calculateScore($this->criteria));
+        $this->assertEquals(75, $this->calculator->calculateScore($this->criteria));
     }
 
     public function testCalculateScoreRentTooHigh()
     {
-        // (10 + 6 + 0 + 40 + 0) / 22
         $this->criteria['rent']->setValue(1350);
 
-        $this->assertEquals(2.55, $this->calculator->calculateScore($this->criteria));
+        $this->assertEquals(57.20, $this->calculator->calculateScore($this->criteria));
     }
 }

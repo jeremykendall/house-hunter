@@ -5,15 +5,10 @@ namespace HH\Calculator;
 class CriteriaCalculator
 {
     /**
-     * @var array[Criterion]
-     */
-    private $criteria;
-
-    /**
      * Calculates total criteria score
      *
-     * @param array Critera to score
-     * @return int Score
+     * @param  array[Criterion] $criteria Critera to score
+     * @return float            Total score
      */
     public function calculateScore(array $criteria)
     {
@@ -25,7 +20,7 @@ class CriteriaCalculator
             $scoreSum += $criterion->getScore();
         }
 
-        $score = $scoreSum / $weightSum; 
+        $score = $scoreSum / $weightSum;
 
         return number_format($score, 2);
     }
